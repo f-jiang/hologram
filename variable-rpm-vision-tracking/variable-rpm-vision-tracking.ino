@@ -33,6 +33,11 @@ void loop() {
     Serial.print(" ");
     Serial.print(cam.Blob1.Size);
     Serial.println();
+  } else {
+    digitalWrite(8, LOW);
+    digitalWrite(9, LOW);
+    digitalWrite(10, LOW);
+    digitalWrite(11, LOW);
   }
 
   Serial.println("---");
