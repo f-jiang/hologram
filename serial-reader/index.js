@@ -2,31 +2,27 @@
 
 (function() {
   var http = require('http');
+  var fs = require('fs');
 
-  var SerialPort = require("serialport");
-  var serialPort = new SerialPort("/dev/ttyUSB0", {baudrate: 9600});
-
-  var readings;
-
-  serialPort.on('open', () => {
-    serialPort.on('data', (data) => {
-      console.log(data[0]);
-      readings = data;
+  var server = http.createServer((req, res) => {
+    fs.readFile('./app.html', 'utf-8', function(error, content) {
+      res.writeHead(200, {"Content-Type": "text/html"});
+      res.end(content);
     });
   });
 
-  http.createServer((req, res) => {
-    res.on('error', (err) => {
-      console.error(err);
-      res.statusCode = 400;
-      res.end();
-    });
+  var io = require('socket.io').listen(server);
+  var SerialPort = require("serialport");
+  var serialPort = new SerialPort("/dev/ttyUSB0", {baudrate: 9600});
 
-    res.statusCode = 200;
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Content-Type', 'text/json');
-    res.write(JSON.stringify(readings));
-    res.end();
-  }).listen(8080, 'localhost');
+  io.sockets.on('connection', (socket) => {
+    serialPort.on('open', () => {
+      serialPort.on('data', (data) => {
+        socket.emit('reading', data);
+      });
+    });
+  });
+
+  server.listen(8080);
 })();
 
