@@ -8,23 +8,36 @@
 
     var client = new Sketchfab(version, iframe);
 
-    var onSuccess = function(api) {
-      var xhttp = new XMLHttpRequest();
-      var getReadings = function() {
-        xhttp.open('GET', 'http://localhost:8080', true);
-        xhttp.send();
-      };
-      xhttp.onreadystatechange = function() {
-        if (xhttp.readyState === 4 && xhttp.status === 200) {
-          console.log(xhttp.responseText);
-          getReadings();
-        }
-      };
+    var xhttp = new XMLHttpRequest();
+    var data;
+    var getReadings = function() {
+      xhttp.open('GET', 'http://localhost:8080', true);
+      xhttp.send();
+    };
+    xhttp.onreadystatechange = function() {
+      if (xhttp.readyState === 4 && xhttp.status === 200) {
+        data = JSON.parse(xhttp.responseText).data;
+        getReadings();
+      }
+    };
 
+    var onSuccess = function(api) {
       api.start();
       api.addEventListener('viewerready', () => {
         console.log('Viewer ready');
-        getReadings();
+        api.getNodeMap((err, nodes) => {
+          setTimeout(function() {
+            var curNode;
+            for (var id in nodes) {
+              curNode = nodes[id];
+              if (curNode.type === 'MatrixTransform') {
+                api.rotate(curNode.instanceID, [Math.PI * 3 / 2, 1, 0, 0], 1.0, 'easeOutQuad', function(err, rotateTo) { 
+                  console.log(err ? err : 'rotation complete')
+                });
+              }
+            }
+          }, 5000);
+        });
       });
     };
 

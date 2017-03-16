@@ -27,6 +27,6 @@
     res.setHeader('Content-Type', 'text/json');
     res.write(JSON.stringify(readings));
     res.end();
-  }).listen(8080);
+  }).listen(8080, 'localhost');
 })();
 
