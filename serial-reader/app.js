@@ -21,23 +21,17 @@
       }
     };
 
+    var look = function(api, angle, dist) {
+      api.lookat([dist * Math.cos(angle), dist * Math.sin(angle), 0], [0, 0, 0], 0, () => {
+        look(api, angle + 0.01, dist);
+      });
+    };
+
     var onSuccess = function(api) {
       api.start();
       api.addEventListener('viewerready', () => {
         console.log('Viewer ready');
-        api.getNodeMap((err, nodes) => {
-          setTimeout(function() {
-            var curNode;
-            for (var id in nodes) {
-              curNode = nodes[id];
-              if (curNode.type === 'MatrixTransform') {
-                api.rotate(curNode.instanceID, [Math.PI * 3 / 2, 1, 0, 0], 1.0, 'easeOutQuad', function(err, rotateTo) { 
-                  console.log(err ? err : 'rotation complete')
-                });
-              }
-            }
-          }, 5000);
-        });
+        look(api, 0, 8);
       });
     };
 
