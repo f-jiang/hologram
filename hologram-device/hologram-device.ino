@@ -47,7 +47,15 @@ int step;
 double mult;
 #endif
 
-volatile unsigned int encPos = 0;
+uint16_t encPos = 0;
+uint16_t camY = 0;
+uint8_t buf[4];
+
+void serialWrite() {
+  memcpy(buf, &encPos, sizeof(uint16_t));
+  memcpy(buf + 2, &camY, sizeof(uint16_t));
+  Serial.write(buf, sizeof(buf));
+}
 
 void doEncoder() {
   /* If pinA and pinB are both high or both low, it is spinning
@@ -65,6 +73,8 @@ void doEncoder() {
     encPos--;
     encPos %= TICKS_PER_REV;
   }
+
+  serialWrite();
 
   Serial.println (encPos, DEC);
 }
@@ -97,6 +107,8 @@ void loop(){
 
   if (hasBlob) {
     pos = cam.Blob1.Y;  // ports for X and Y are mixed up - need to fix
+    camY = cam.Blob1.X;
+    serialWrite();
 
     if (abs(pos) > DEADBAND) { 
       pidCtrl.Compute();
@@ -138,11 +150,14 @@ void loop(){
   Serial.print(step);
   Serial.print(" ");            
   Serial.println();
+#endif
 #else
   hasBlob = cam.read() & BLOB1;
 
   if (hasBlob) {
     pos = cam.Blob1.Y - CAM_CENT;  // ports for X and Y are mixed up - need to fix
+    camY = cam.Blob1.X;
+    serialWrite();
 
     if (abs(pos) > DEADBAND) {
       mult = (double) abs(pos) / CAM_CENT;
