@@ -4,7 +4,7 @@
   const SERIAL_PORT = process.argv[2];  // node index.js /dev/ttyUSB0
 
   var map = function(val, fromLo, fromHi, toLo, toHi) {
-    return toLow + (val - fromLo) * (toHi - toLo) / (fromHi - fromLo);
+    return toLo + (val - fromLo) * (toHi - toLo) / (fromHi - fromLo);
   };
 
   var http = require('http');
