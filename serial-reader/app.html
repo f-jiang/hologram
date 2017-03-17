@@ -38,10 +38,14 @@
 
               socket.emit();  // open connection with server
 
-              socket.on('reading', (reading) => {
-                console.log('reading:', reading);
+              var x, y, z;
+              socket.on('readings', (readings) => {
+                console.log('angle: ' + readings.angle, 'tilt: ' + readings.tilt);
 
-                // api.lookat([10 * Math.cos(reading), 10 * Math.sin(reading), 0], [0, 0, 0], 0);
+                x = 10 * Math.cos(readings.angle);
+                y = 10 * Math.sin(readings.angle);
+                z = 0;
+                api.lookat([x, y, z], [0, 0, 0], 0);
               });
             });
           };
