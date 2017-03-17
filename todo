@@ -1,6 +1,6 @@
 ####`hologram-device`
 
-- [ ] verify combined program works for both encoder and vision tracking (non-PID)
+- [x] verify combined program works for both encoder and vision tracking (non-PID)
 - [ ] `encPos %= 320`, and send readings to `model-viewer` (`uint16_t`, `buf[]`, `memcpy()` twice, `Serial.write()`)
 - [ ] verify that revised `PVision` and `PID` work, then add to this project and update usage throughout code
 - [ ] PID vision tracking
