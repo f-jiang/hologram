@@ -1,4 +1,5 @@
 //#define PID_VISION_TRACKING
+#define PRINT_DBG
 
 #ifdef PID_VISION_TRACKING
 #include <Stepper.h>
@@ -76,7 +77,9 @@ void doEncoder() {
 
   serialWrite();
 
+#ifdef PRINT_DBG
   Serial.println (encPos, DEC);
+#endif
 }
 
 void setup() {
@@ -133,6 +136,7 @@ void loop(){
     digitalWrite(11, LOW);
   }
 
+#ifdef PRINT_DBG
   Serial.print(cam.Blob1.Y);
   Serial.print(" ");
   Serial.print(pos);
@@ -172,12 +176,14 @@ void loop(){
       motor.step(step);
     }
 
+#ifdef PRINT_DBG
     Serial.print(cam.Blob1.Y);
     Serial.print(" ");
     Serial.print(cam.Blob1.X);
     Serial.print(" ");
     Serial.print(cam.Blob1.Size);
-    Serial.println();  
+    Serial.println();
+#endif  
   }
 
   if (!hasBlob || abs(pos) <= DEADBAND) {
