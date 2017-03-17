@@ -15,6 +15,7 @@
 #define MAX_RPM 60
 #define MAX_STEP 10
 #define DEADBAND 0
+#define TICKS_PER_REV 320
 
 #define ENC_A  2
 #define ENC_B  3
@@ -57,8 +58,12 @@ void doEncoder() {
    */ 
   if (digitalRead(ENC_A) == digitalRead(ENC_B)) {
     encPos++;
+    encPos %= TICKS_PER_REV;
+  } else if (encPos == 0) {
+    encPos = TICKS_PER_REV;
   } else {
     encPos--;
+    encPos %= TICKS_PER_REV;
   }
 
   Serial.println (encPos, DEC);
