@@ -1,6 +1,8 @@
 'use strict';
 
 (function() {
+  const SERIAL_PORT = process.argv[2];  // node index.js /dev/ttyUSB0
+
   var http = require('http');
   var fs = require('fs');
 
@@ -13,12 +15,18 @@
 
   var io = require('socket.io').listen(server);
   var SerialPort = require("serialport");
-  var serialPort = new SerialPort("/dev/ttyUSB0", {baudrate: 9600});
+  var serialPort = new SerialPort(SERIAL_PORT, {baudrate: 9600});
 
-  io.sockets.on('connection', (socket) => {
-    serialPort.on('open', () => {
+  serialPort.on('open', () => {
+    console.log('opened connection to serial port', SERIAL_PORT);
+
+    io.sockets.on('connection', (socket) => {
+      console.log('connection with client opened');
+
       serialPort.on('data', (data) => {
-        socket.emit('reading', data);
+        console.log('reading:', data[0]);
+        //socket.emit('reading', data[0]);
+        socket.emit('reading', 0.1);
       });
     });
   });
