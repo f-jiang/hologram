@@ -34,8 +34,8 @@
           // p1[2] = z1
           var getDist = function(p1, p2) {
             return Math.sqrt(Math.pow(p2[0] - p1[0], 2)
-                + Math.pow(p2[2] - p1[2], 2)
-                + Math.pow(p2[3] - p1[3], 2));
+                + Math.pow(p2[1] - p1[1], 2)
+                + Math.pow(p2[2] - p1[2], 2));
           };
 
           var onSuccess = function(api) {
