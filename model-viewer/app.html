@@ -47,7 +47,8 @@
 
               socket.emit();  // open connection with server
 
-              var x, y, z;
+              var dist, x, y, z;
+              var target = [0, 0, 0];
               socket.on('readings', (readings) => {
                 if (readings.angle === 0) {
                   readings.angle = 0.001;
@@ -55,10 +56,13 @@
 
                 console.log('angle: ' + readings.angle, 'tilt: ' + readings.tilt);
 
-                x = 10 * Math.cos(readings.angle);
-                y = 10 * Math.sin(readings.angle);
-                z = 0;
-                api.lookat([x, y, z], [0, 0, 0], 0);
+                api.getCameraLookAt((err, camera) => {
+                  dist = getDist(camera.position, target);
+                  x = dist * Math.cos(readings.angle);
+                  y = dist * Math.sin(readings.angle);
+                  z = 0;
+                  api.lookat([x, y, z], target, 0);
+                });
               });
             });
           };
