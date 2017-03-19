@@ -49,6 +49,10 @@
 
               var x, y, z;
               socket.on('readings', (readings) => {
+                if (readings.angle === 0) {
+                  readings.angle = 0.001;
+                }
+
                 console.log('angle: ' + readings.angle, 'tilt: ' + readings.tilt);
 
                 x = 10 * Math.cos(readings.angle);
