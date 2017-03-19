@@ -1,14 +1,15 @@
 ####`hologram-device`
 
 - [x] verify combined program works for both encoder and vision tracking (non-PID)
-- [ ] `encPos %= 320`, and send readings to `model-viewer` (`uint16_t`, `buf[]`, `memcpy()` twice, `Serial.write()`)
-- [ ] verify that revised `PVision` and `PID` work, then add to this project and update usage throughout code
-- [ ] PID vision tracking
+- [x] `encPos %= 320`, and send readings to `model-viewer` (`uint16_t`, `buf[]`, `memcpy()` twice, `Serial.write()`)
+- [ ] enable following even when blob isn't visible
+- [ ] remove `memcpy()` calls
+- [ ] see what is slowing down PVision
 
 ####`model-viewer`
 
 - [ ] height tracking using camera readings
-- [ ] automatically set zoom level and view target based on model size (`api.getNodes()`)
 - [ ] enable switching models within the program
   - slider (likely slick)
+- [ ] automatically set zoom level and view target based on model size (`api.getNodes()`)
 
