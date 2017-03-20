@@ -27,14 +27,14 @@
     io.sockets.on('connection', (socket) => {
       console.log('connection with client opened');
 
-      var angle, tilt, buf;
+      var angle, elevation, buf;
       serialPort.on('data', (data) => {
         buf = Buffer.from(data);
         angle = map(buf.readUInt16LE(0), 0, 320, 0, 2 * Math.PI);
-        tilt = map(buf.readUInt16LE(2), 0, 1024, 0, 2 * Math.PI);
+        elevation = map(buf.readUInt16LE(2), 0, 1024, 0, 1);
 
-        console.log('angle: ' + angle, 'tilt: ' + tilt);
-        socket.emit('readings', {'angle': angle, 'tilt': tilt});
+        console.log('angle: ' + angle, 'elevation: ' + elevation);
+        socket.emit('readings', {'angle': angle, 'elevation': elevation});
       });
     });
   });

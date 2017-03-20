@@ -54,10 +54,11 @@
                   readings.angle = 0.001;
                 }
 
-                console.log('angle: ' + readings.angle, 'tilt: ' + readings.tilt);
+                console.log('angle: ' + readings.angle, 'elevation: ' + readings.elevation);
 
                 api.getCameraLookAt((err, camera) => {
-                  dist = getDist(camera.position, target);
+                  dist = Math.sqrt(Math.pow(getDist(camera.position, target), 2) -
+                    Math.pow(z - target[2], 2));
                   x = dist * Math.cos(readings.angle);
                   y = dist * Math.sin(readings.angle);
                   z = 0;
