@@ -11,5 +11,6 @@
 - [ ] height tracking using camera readings
 - [ ] enable switching models within the program
   - slider (likely slick)
+- [ ] set camera target to bound center
 - [ ] automatically set zoom level and view target based on model size (`api.getNodes()`)
 
