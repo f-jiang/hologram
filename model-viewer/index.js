@@ -3,6 +3,7 @@
 (function() {
   const SERIAL_PORT = process.argv[2];  // node index.js /dev/ttyUSB0
   const MAX_TILT_DEG = 11.5;
+  const MODEL_ELEVATION_RATIO = 60 / 90;
 
   var map = function(val, fromLo, fromHi, toLo, toHi) {
     return toLo + (val - fromLo) * (toHi - toLo) / (fromHi - fromLo);
@@ -34,7 +35,7 @@
         angle = map(buf.readUInt16LE(0), 0, 320, 0, 2 * Math.PI);
 
         cameraTilt = map(buf.readUInt16LE(2), 0, 1024, -MAX_TILT_DEG, MAX_TILT_DEG) * Math.PI / 180;
-        modelTilt = Math.atan(2 * Math.tan(cameraTilt));
+        modelTilt = Math.atan(2 * Math.tan(cameraTilt) - MODEL_ELEVATION_RATIO);
 
         console.log('angle: ' + angle, 'camera tilt: ' + cameraTilt, 'model tilt: ' + modelTilt);
         socket.emit('readings', {'angle': angle, 'tilt': modelTilt});
