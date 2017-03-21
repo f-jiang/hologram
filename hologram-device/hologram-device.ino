@@ -11,8 +11,8 @@
 #define DEADBAND 0
 #define TICKS_PER_REV 320
 
-#define ENC_A  2
-#define ENC_B  3
+#define ENC_A  0
+#define ENC_B  1
 
 bool varRpm = true;
 bool varStep = true;
