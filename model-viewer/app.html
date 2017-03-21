@@ -61,7 +61,7 @@
                     Math.pow(z - target[2], 2));
                   x = dist * Math.cos(readings.angle);
                   y = dist * Math.sin(readings.angle);
-                  z = 0;
+                  z = readings.elevation;
                   api.lookat([x, y, z], target, 0);
                 });
               });
