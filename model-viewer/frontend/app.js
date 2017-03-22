@@ -58,7 +58,7 @@
         for (var i = 0; i < data.length; i++) {
           $('.gallery').append(`
             <div>
-              <img src=` + data[i] + `/>
+              <img src="${data[i]}"/>
             </div>
           `);
         }
