@@ -70,7 +70,7 @@ void setup() {
   pinMode(ENC_B, INPUT); 
   digitalWrite(ENC_B, HIGH);       // turn on pull-up resistor
 
-  attachInterrupt(0, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
+  attachInterrupt(2, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
   Serial.begin (9600);
   Serial.println("start");                // a personal quirk
 } 
