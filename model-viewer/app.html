@@ -47,7 +47,10 @@
 
               socket.emit();  // open connection with server
 
-              var dist, x, y, z;
+              var dist = 0;
+	      var x = 0;
+	      var y = 0;
+	      var z = 0;
               var target = [0, 0, 0];
               socket.on('readings', (readings) => {
                 if (readings.angle === 0) {
