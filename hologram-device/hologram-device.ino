@@ -35,6 +35,7 @@ void serialWrite() {
   memcpy(buf, &encPos, sizeof(uint16_t));
   memcpy(buf + 2, &camY, sizeof(uint16_t));
   Serial.write(buf, sizeof(buf));
+  delay(5);
 }
 
 void doEncoder() {
