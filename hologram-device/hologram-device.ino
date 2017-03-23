@@ -1,4 +1,4 @@
-#define PRINT_DBG
+//#define PRINT_DBG
 
 #include <Stepper.h>
 #include <PVision.h>
@@ -27,14 +27,13 @@ int step;
 
 double mult;
 
-uint16_t encPos = 0;
-uint16_t camY = 0;
 uint8_t buf[4];
+uint16_t *encPos = (uint16_t *)buf;
+uint16_t *camY = (uint16_t *)(buf + 2);
 
 void serialWrite() {
-  memcpy(buf, &encPos, sizeof(uint16_t));
-  memcpy(buf + 2, &camY, sizeof(uint16_t));
   Serial.write(buf, sizeof(buf));
+  Serial.flush();
 }
 
 void doEncoder() {
@@ -45,24 +44,27 @@ void doEncoder() {
    * [Reference/PortManipulation], specifically the PIND register.
    */ 
   if (digitalRead(ENC_A) == digitalRead(ENC_B)) {
-    encPos++;
-    encPos %= TICKS_PER_REV;
-  } else if (encPos == 0) {
-    encPos = TICKS_PER_REV;
+    (*encPos)++;
+    *encPos %= TICKS_PER_REV;
+  } else if (*encPos == 0) {
+    *encPos = TICKS_PER_REV;
   } else {
-    encPos--;
-    encPos %= TICKS_PER_REV;
+    (*encPos)--;
+    *encPos %= TICKS_PER_REV;
   }
 
   serialWrite();
 
 #ifdef PRINT_DBG
-  Serial.println (encPos, DEC);
+  Serial.println (*encPos, DEC);
 #endif
 }
 
 void setup() {
   cam.init();
+
+  memset(buf, 0, sizeof(buf));
+
   motor.setSpeed(MAX_RPM);
 
   pinMode(ENC_A, INPUT); 
@@ -70,7 +72,7 @@ void setup() {
   pinMode(ENC_B, INPUT); 
   digitalWrite(ENC_B, HIGH);       // turn on pull-up resistor
 
-  attachInterrupt(0, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
+  attachInterrupt(2, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
   Serial.begin (9600);
   Serial.println("start");                // a personal quirk
 } 
@@ -80,7 +82,7 @@ void loop(){
 
   if (hasBlob) {
     pos = cam.Blob1.Y - CAM_CENT;  // ports for X and Y are mixed up - need to fix
-    camY = cam.Blob1.X;
+    *camY = (uint16_t) cam.Blob1.X;
     serialWrite();
 
     if (abs(pos) > DEADBAND) {
