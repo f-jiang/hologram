@@ -42,12 +42,14 @@
 
   new Promise((resolve, reject) => {
     fs.readFile('models.json', (err, contents) => {
-      var urlids = JSON.parse(contents);
+      var urls = JSON.parse(contents);
       var count = 0;
       var models = [];
 
-      for (var i = 0; i < urlids.length; i++) {
-        https.get('https://api.sketchfab.com/v3/models/' + urlids[i], (res) => {
+      for (var i = 0; i < urls.length; i++) {
+        var urlid = path.basename(url.parse(urls[i]).pathname);
+
+        https.get(url.resolve('https://api.sketchfab.com/v3/models/', urlid), (res) => {
           var body = '';
 
           res.on('data', (d) => {
@@ -57,7 +59,7 @@
           res.on('end', () => {
             models.push(JSON.parse(body));
             
-            if (++count === urlids.length) {
+            if (++count === urls.length) {
               resolve(models);
             }
           });
