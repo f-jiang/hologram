@@ -1,4 +1,4 @@
-#define PRINT_DBG
+//#define PRINT_DBG
 
 #include <Stepper.h>
 #include <PVision.h>
