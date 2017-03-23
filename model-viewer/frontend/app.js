@@ -1,13 +1,12 @@
 'use strict';
 
 (function() {
-  document.addEventListener('DOMContentLoaded', () => {
-    var iframe = document.getElementById('api-frame');
+  $(document).ready(() => {
+    var iframe = $('#api-frame')[0];
     var version = '1.0.0'
-    var urlid = '375ae80dc7e34b229cc9739b1ce92e2b';
 
     var client = new Sketchfab(version, iframe);
-//    var socket = io.connect('http://localhost:8080');
+    var socket = io.connect('http://localhost:8080');
 
     // p1[0] = x1
     // p1[1] = y1
@@ -25,26 +24,26 @@
       api.addEventListener('viewerready', () => {
         console.log('viewer ready');
 
-//        socket.emit();  // open connection with server
+        socket.emit();  // open connection with server
 
         var dist, x, y, z;
         var target = [0, 0, 0];
-//        socket.on('readings', (readings) => {
-//          if (readings.angle === 0) {
-//            readings.angle = 0.001;
-//          }
-//
-//          console.log('angle: ' + readings.angle, 'elevation: ' + readings.elevation);
-//
-//          api.getCameraLookAt((err, camera) => {
-//            dist = Math.sqrt(Math.pow(getDist(camera.position, target), 2) -
-//              Math.pow(z - target[2], 2));
-//            x = target[0] + dist * Math.cos(readings.angle);
-//            y = target[1] + dist * Math.sin(readings.angle);
-//            z = target[2];
-//            api.lookat([x, y, z], target, 0);
-//          });
-//        });
+        socket.on('readings', (readings) => {
+          if (readings.angle === 0) {
+            readings.angle = 0.001;
+          }
+
+          console.log('angle: ' + readings.angle, 'elevation: ' + readings.elevation);
+
+          api.getCameraLookAt((err, camera) => {
+            dist = Math.sqrt(Math.pow(getDist(camera.position, target), 2) -
+              Math.pow(z - target[2], 2));
+            x = target[0] + dist * Math.cos(readings.angle);
+            y = target[1] + dist * Math.sin(readings.angle);
+            z = target[2];
+            api.lookat([x, y, z], target, 0);
+          });
+        });
       });
     };
 
@@ -52,25 +51,8 @@
       console.log('Sketchfab API error. Maybe you\'re not online?');
     };
 
-    $(document).ready(() => {
-
-      $.get('/thumbnails', (data) => {
-        for (var i = 0; i < data.length; i++) {
-          $('.gallery').append(`
-            <div>
-              <img src="${data[i]}"/>
-            </div>
-          `);
-        }
-
-        $('.drawer').drawer();
-        $('.gallery').slick({
-          accessibility: false,
-          centerMode: true,
-          dots: true,
-          slidesToShow: 3,
-          slidesToScroll: 1
-        });
+    var loadModel = function(index) {
+      $.get('/urlid?index=' + index, (urlid) => {
         client.init(urlid, {
           success: onSuccess,
           error: onError,
@@ -79,6 +61,34 @@
           navigation: 'fps'
         });
       });
+    };
+
+    $.get('/thumbnails', (thumbnails) => {
+      for (var i = 0; i < thumbnails.length; i++) {
+        $('.gallery').append(`
+          <div class="slide">
+            <img class="thumbnail" src="${thumbnails[i]}"/>
+          </div>
+        `);
+      }
+
+      $('.drawer').drawer();
+
+      var start = 0;
+      $('.gallery').slick({
+        accessibility: false,
+        centerMode: true,
+        dots: true,
+        focusOnSelect: true,
+        initialSlide: start,
+        slidesToShow: 5,
+        slidesToScroll: 1
+      });
+      $('.gallery').on('afterChange', (event, slick, currentSlide) => {
+        loadModel(currentSlide);
+      });
+
+      loadModel(start);
     });
   });
 })();
