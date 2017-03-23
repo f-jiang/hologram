@@ -33,7 +33,7 @@ uint16_t *camY = (uint16_t *)(buf + 2);
 
 void serialWrite() {
   Serial.write(buf, sizeof(buf));
-  delay(5);
+  Serial.flush();
 }
 
 void doEncoder() {
