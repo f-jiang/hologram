@@ -82,7 +82,7 @@ void loop(){
 
   if (hasBlob) {
     pos = cam.Blob1.Y - CAM_CENT;  // ports for X and Y are mixed up - need to fix
-    *camY = cam.Blob1.X;
+    *camY = (uint16_t) cam.Blob1.X;
     serialWrite();
 
     if (abs(pos) > DEADBAND) {
