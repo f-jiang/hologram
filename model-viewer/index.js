@@ -3,7 +3,7 @@
 (function() {
   const SERIAL_PORT = process.argv[2];  // node index.js /dev/ttyUSB0
   const MAX_TILT_DEG = 11.5;
-  const MODEL_ELEVATION_RATIO = 60 / 90;
+  const MODEL_ELEVATION_RATIO = 0; // 60 / 90;
 
   var map = function(val, fromLo, fromHi, toLo, toHi) {
     return toLo + (val - fromLo) * (toHi - toLo) / (fromHi - fromLo);
