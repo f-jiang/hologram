@@ -9,8 +9,11 @@
 ####`model-viewer`
 
 - [ ] height tracking using camera readings
-- [ ] enable switching models within the program
+- [x] enable switching models within the program
   - slider (likely slick)
 - [ ] set camera target to bound center
 - [ ] automatically set zoom level and view target based on model size (`api.getNodes()`)
-
+- gallery improvements
+  - [ ] better, centered drawer icon
+  - [ ] automatically close drawer on model select
+  - [ ] only load new model if its slide has been explicitly clicked on (ignore drags, next/prev btn presses)
