@@ -1,19 +1,24 @@
 ####`hologram-device`
 
+- [ ] see what is slowing down PVision
+- [ ] enable following even when blob isn't visible
+- [ ] lock onto the user each time the web interface is opened
+  - using socketio send from node to arduino serialread etc
+- [ ] PID vision tracking
 - [x] verify combined program works for both encoder and vision tracking (non-PID)
 - [x] `encPos %= 320`, and send readings to `model-viewer` (`uint16_t`, `buf[]`, `memcpy()` twice, `Serial.write()`)
-- [ ] enable following even when blob isn't visible
-- [ ] remove `memcpy()` calls
-- [ ] see what is slowing down PVision
+- [x] remove `memcpy()` calls
 
 ####`model-viewer`
 
-- [ ] height tracking using camera readings
+- [ ] set camera target to bound center
+- [ ] get rid of the sudden jump in orientation after a model is loaded
+- [ ] automatically set zoom level and view target based on model size (`api.getNodes()`)
+- [x] height tracking using camera readings
 - [x] enable switching models within the program
   - slider (likely slick)
-- [ ] set camera target to bound center
-- [ ] automatically set zoom level and view target based on model size (`api.getNodes()`)
 - gallery improvements
-  - [ ] better, centered drawer icon
-  - [ ] automatically close drawer on model select
   - [ ] only load new model if its slide has been explicitly clicked on (ignore drags, next/prev btn presses)
+  - [ ] automatically close drawer on model select
+  - [ ] better, centered drawer icon
+
