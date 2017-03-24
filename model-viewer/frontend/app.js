@@ -26,7 +26,10 @@
 
         socket.emit();  // open connection with server
 
-        var dist, x, y, z;
+        var dist = 0;
+        var x = 0;
+        var y = 0;
+        var z = 0;
         var target = [0, 0, 0];
         socket.on('readings', (readings) => {
           if (readings.angle === 0) {
@@ -40,7 +43,7 @@
               Math.pow(z - target[2], 2));
             x = target[0] + dist * Math.cos(readings.angle);
             y = target[1] + dist * Math.sin(readings.angle);
-            z = target[2];
+            z = target[2] + dist * Math.sin(readings.tilt);
             api.lookat([x, y, z], target, 0);
           });
         });
