@@ -39,12 +39,14 @@
           console.log('angle: ' + readings.angle, 'tilt: ' + readings.tilt);
 
           api.getCameraLookAt((err, camera) => {
-            dist = Math.sqrt(Math.pow(getDist(camera.position, target), 2) -
-              Math.pow(z - target[2], 2));
-            x = target[0] + dist * Math.cos(readings.angle);
-            y = target[1] + dist * Math.sin(readings.angle);
-            z = target[2] + dist * Math.sin(readings.tilt);
-            api.lookat([x, y, z], target, 0);
+            if (camera != null) {
+              dist = Math.sqrt(Math.pow(getDist(camera.position, target), 2) -
+                  Math.pow(z - target[2], 2));
+              x = target[0] + dist * Math.cos(readings.angle);
+              y = target[1] + dist * Math.sin(readings.angle);
+              z = target[2] + dist * Math.sin(readings.tilt);
+              api.lookat([x, y, z], target, 0);
+            }
           });
         });
       });
