@@ -18,7 +18,10 @@
   var app = express();
   var server = http.Server(app);
   var io = require('socket.io')(server);
-  var serial = new SerialPort(SERIAL_PORT, {baudrate: 9600});
+  var serial = new SerialPort(SERIAL_PORT, {
+    baudrate: 9600,
+    parser: SerialPort.parsers.byteLength(4)
+  });
 
   var map = function(val, fromLo, fromHi, toLo, toHi) {
     return toLo + (val - fromLo) * (toHi - toLo) / (fromHi - fromLo);
