@@ -30,22 +30,19 @@
   serial.on('open', () => {
     console.log('opened connection to serial port', SERIAL_PORT);
 
-    var count = 0;
     io.sockets.on('connection', (socket) => {
       console.log('connection with client opened');
 
       var angle, cameraTilt, modelTilt, buf;
       serial.on('data', (data) => {
-        if (++count % 2 == 0) {
-          buf = Buffer.from(data);
-          angle = map(buf.readUInt16LE(0), 0, 320, 0, 2 * Math.PI);
+        buf = Buffer.from(data);
+        angle = map(buf.readUInt16LE(0), 0, 320, 0, 2 * Math.PI);
 
-          cameraTilt = map(buf.readUInt16LE(2), 0, 1024, -MAX_TILT_DEG, MAX_TILT_DEG) * Math.PI / 180;
-          modelTilt = Math.atan(2 * Math.tan(cameraTilt) - MODEL_ELEVATION_RATIO);
+        cameraTilt = map(buf.readUInt16LE(2), 0, 1024, -MAX_TILT_DEG, MAX_TILT_DEG) * Math.PI / 180;
+        modelTilt = Math.atan(2 * Math.tan(cameraTilt) - MODEL_ELEVATION_RATIO);
 
-          console.log('angle: ' + angle, 'camera tilt: ' + cameraTilt, 'model tilt: ' + modelTilt);
-          socket.emit('readings', {'angle': angle, 'tilt': modelTilt});
-        }
+        console.log('angle: ' + angle, 'camera tilt: ' + cameraTilt, 'model tilt: ' + modelTilt);
+        socket.emit('readings', {'angle': angle, 'tilt': modelTilt});
       });
     });
   });
