@@ -3,9 +3,10 @@
 #include <Stepper.h>
 #include <PVision.h>
 
-#define CAM_MAX 760
-#define CAM_MIN 0
-#define CAM_CENT ((CAM_MAX + CAM_MIN) / 2.0)
+#define CAM_X_MAX 1024
+#define CAM_X_CENT (CAM_X_MAX / 2.0)
+#define CAM_Y_MAX 768
+
 #define MAX_RPM 60
 #define MAX_STEP 10
 #define DEADBAND 0
@@ -13,6 +14,10 @@
 
 #define ENC_A  0
 #define ENC_B  1
+#define STEPPER_A 8
+#define STEPPER_B 9
+#define STEPPER_C 10
+#define STEPPER_D 11
 
 bool varRpm = true;
 bool varStep = true;
@@ -21,7 +26,7 @@ PVision cam;
 int pos;
 bool hasBlob;
 
-Stepper motor(360, 8, 9, 10, 11);
+Stepper motor(360, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 long rpm;
 int step;
 
@@ -81,12 +86,12 @@ void loop(){
   hasBlob = cam.read() & BLOB1;
 
   if (hasBlob) {
-    pos = cam.Blob1.Y - CAM_CENT;  // ports for X and Y are mixed up - need to fix
-    *camY = (uint16_t) (1024 - cam.Blob1.X);
-    serialWrite();
+    pos = cam.Blob1.Y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
+    *camY = (uint16_t) (CAM_Y_MAX - cam.Blob1.X);
+//    serialWrite();
 
     if (abs(pos) > DEADBAND) {
-      mult = (double) abs(pos) / CAM_CENT;
+      mult = (double) abs(pos) / CAM_X_CENT;
       rpm = varRpm ? mult * MAX_RPM : MAX_RPM;
       step = varStep ? mult * MAX_STEP : MAX_STEP;
 
@@ -109,10 +114,10 @@ void loop(){
   }
 
   if (!hasBlob || abs(pos) <= DEADBAND) {
-    digitalWrite(8, LOW);
-    digitalWrite(9, LOW);
-    digitalWrite(10, LOW);
-    digitalWrite(11, LOW);
+    digitalWrite(STEPPER_A, LOW);
+    digitalWrite(STEPPER_B, LOW);
+    digitalWrite(STEPPER_C, LOW);
+    digitalWrite(STEPPER_D, LOW);
   }
 }
 
