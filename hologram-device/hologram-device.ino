@@ -36,7 +36,8 @@ uint8_t buf[4];
 uint16_t *encPos = (uint16_t *)buf;
 uint16_t *camY = (uint16_t *)(buf + 2);
 
-void serialWrite() {
+// period ~0.033 s
+ISR(TIMER3_OVF_vect) {
   Serial.write(buf, sizeof(buf));
   Serial.flush();
 }
@@ -58,14 +59,25 @@ void doEncoder() {
     *encPos %= TICKS_PER_REV;
   }
 
-  serialWrite();
-
 #ifdef PRINT_DBG
   Serial.println (*encPos, DEC);
 #endif
 }
 
 void setup() {
+  // timer interrupt setup
+  noInterrupts();
+  TCCR3A = 0;
+  TCCR3B = 0;
+
+  TIMSK3 |= (1 << TOIE3);  // enable interrupt handler
+
+  // 8 prescaler--increment TNCT3 every 8*(6.25e-8) s
+  TCCR3B |= (1 << CS31);
+
+  interrupts();
+  // end the timer interrupt setup
+
   cam.init();
 
   memset(buf, 0, sizeof(buf));
@@ -88,7 +100,6 @@ void loop(){
   if (hasBlob) {
     pos = cam.Blob1.Y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
     *camY = (uint16_t) (CAM_Y_MAX - cam.Blob1.X);
-//    serialWrite();
 
     if (abs(pos) > DEADBAND) {
       mult = (double) abs(pos) / CAM_X_CENT;
