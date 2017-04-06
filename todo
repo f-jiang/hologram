@@ -1,9 +1,13 @@
 ####`hologram-device`
 
-- [ ] see what is slowing down PVision
+- [ ] eliminate y-value flickering when camera goes out of height bounds
 - [ ] enable following even when blob isn't visible
 - [ ] lock onto the user each time the web interface is opened
   - using socketio send from node to arduino serialread etc
+- [ ] timeout after which low power mode begins
+  - [ ] first will need to organize relay code (its own class)
+- [ ] motor slew rate control
+- [ ] see what is slowing down PVision
 - [ ] PID vision tracking
 - [x] verify combined program works for both encoder and vision tracking (non-PID)
 - [x] `encPos %= 320`, and send readings to `model-viewer` (`uint16_t`, `buf[]`, `memcpy()` twice, `Serial.write()`)
