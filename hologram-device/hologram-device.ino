@@ -19,6 +19,10 @@
 #define STEPPER_C 10
 #define STEPPER_D 11
 
+#define RELAY_MOTORS_AND_FANS 4  // N/O
+#define RELAY_FOG_MACH        5  // N/O
+#define RELAY_CAMERA          6  // N/C
+
 bool varRpm = true;
 bool varStep = true;
 
@@ -78,6 +82,15 @@ void setup() {
   interrupts();
   // end the timer interrupt setup
 
+  // relay box setup - everything on by default
+  pinMode(RELAY_MOTORS_AND_FANS, OUTPUT);
+  pinMode(RELAY_FOG_MACH, OUTPUT);
+  pinMode(RELAY_CAMERA, OUTPUT);
+  digitalWrite(RELAY_MOTORS_AND_FANS, LOW);
+  digitalWrite(RELAY_FOG_MACH, LOW);
+  digitalWrite(RELAY_CAMERA, HIGH);
+  // end relay box setup
+
   cam.init();
 
   memset(buf, 0, sizeof(buf));
@@ -131,4 +144,6 @@ void loop(){
     digitalWrite(STEPPER_D, LOW);
   }
 }
+
+
 
