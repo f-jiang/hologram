@@ -1,3 +1,7 @@
+relay-box branch test plan:
+- [ ] test the sketch called "relay-class-test"
+- [ ] test the hologram-device sketch on this branch
+
 ####`hologram-device`
 
 - [ ] see what is slowing down PVision
