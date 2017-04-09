@@ -10,7 +10,9 @@
 #define MAX_RPM 60
 #define MAX_STEP 10
 #define DEADBAND 0
+#define MAX_ROTATIONAL_OFFSET_DEG 75
 #define TICKS_PER_REV 320
+#define DEG_PER_TICK ((double) 360 / TICKS_PER_REV)
 
 #define ENC_A  0
 #define ENC_B  1
@@ -25,6 +27,8 @@
 
 bool varRpm = true;
 bool varStep = true;
+
+double angle = 0;
 
 PVision cam;
 int pos;
@@ -54,17 +58,24 @@ void doEncoder() {
    * [Reference/PortManipulation], specifically the PIND register.
    */ 
   if (digitalRead(ENC_A) == digitalRead(ENC_B)) {
+    angle += DEG_PER_TICK;
+
     (*encPos)++;
     *encPos %= TICKS_PER_REV;
-  } else if (*encPos == 0) {
-    *encPos = TICKS_PER_REV;
   } else {
-    (*encPos)--;
-    *encPos %= TICKS_PER_REV;
-  }
+    angle -= DEG_PER_TICK;
 
+    if (*encPos == 0) {
+      *encPos = TICKS_PER_REV;
+    } else {
+      (*encPos)--;
+      *encPos %= TICKS_PER_REV;
+    }
+  }
 #ifdef PRINT_DBG
-  Serial.println (*encPos, DEC);
+  Serial.print (*encPos, DEC);
+  Serial.print(" ");
+  Serial.println(angle);
 #endif
 }
 
@@ -144,6 +155,7 @@ void loop(){
     digitalWrite(STEPPER_D, LOW);
   }
 }
+
 
 
 
