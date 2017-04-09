@@ -79,6 +79,15 @@ void doEncoder() {
 #endif
 }
 
+void rotateBase(int rpm, int step) {
+  // does positive |step| increase or decrease |angle|?
+  if (!(angle < -MAX_ROTATIONAL_OFFSET_DEG && step < 0) &&
+      !(angle > MAX_ROTATIONAL_OFFSET_DEG && step > 0)) {
+    motor.setSpeed(rpm);
+    motor.step(step);
+  }
+}
+
 void setup() {
   // timer interrupt setup
   noInterrupts();
@@ -134,8 +143,7 @@ void loop(){
         step *= -1;
       }
 
-      motor.setSpeed(rpm);
-      motor.step(step);
+      rotateBase(rpm, step);
     }
 
 #ifdef PRINT_DBG
