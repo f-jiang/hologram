@@ -1,6 +1,6 @@
 relay-box branch test plan:
-- [ ] test the sketch called "relay-class-test"
-- [ ] test the hologram-device sketch on this branch
+- [x] test the sketch called "relay-class-test"
+- [x] test the hologram-device sketch on this branch
 
 ####`hologram-device`
 
