@@ -2,6 +2,7 @@
 
 #include <Stepper.h>
 #include <PVision.h>
+#include "Relay.h"
 
 #define CAM_X_MAX 1024
 #define CAM_X_CENT (CAM_X_MAX / 2.0)
@@ -19,10 +20,6 @@
 #define STEPPER_C 10
 #define STEPPER_D 11
 
-#define RELAY_MOTORS_AND_FANS 4  // N/O
-#define RELAY_FOG_MACH        5  // N/O
-#define RELAY_CAMERA          6  // N/C
-
 bool varRpm = true;
 bool varStep = true;
 
@@ -33,6 +30,10 @@ bool hasBlob;
 Stepper motor(360, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 long rpm;
 int step;
+
+Relay motorsAndFansRelay(4, Relay::Mode::NORMALLY_OPEN);
+Relay fogMachineRelay(5, Relay::Mode::NORMALLY_OPEN);
+Relay camRelay(6, Relay::Mode::NORMALLY_CLOSED);
 
 double mult;
 
@@ -83,12 +84,9 @@ void setup() {
   // end the timer interrupt setup
 
   // relay box setup - everything on by default
-  pinMode(RELAY_MOTORS_AND_FANS, OUTPUT);
-  pinMode(RELAY_FOG_MACH, OUTPUT);
-  pinMode(RELAY_CAMERA, OUTPUT);
-  digitalWrite(RELAY_MOTORS_AND_FANS, LOW);
-  digitalWrite(RELAY_FOG_MACH, LOW);
-  digitalWrite(RELAY_CAMERA, HIGH);
+  motorsAndFansRelay.Close();
+  fogMachineRelay.Close();
+  camRelay.Close();
   // end relay box setup
 
   cam.init();
@@ -144,6 +142,7 @@ void loop(){
     digitalWrite(STEPPER_D, LOW);
   }
 }
+
 
 
 
