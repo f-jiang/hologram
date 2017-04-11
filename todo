@@ -1,7 +1,3 @@
-motion-limits branch testing plan:
-- [ ] run the sketch as is
-- [ ] run the sketch again, this time with MAX_OFFSET set to 0 to see if unlimited range of motion
-
 ####`hologram-device`
 
 - [ ] eliminate y-value flickering when camera goes out of height bounds
