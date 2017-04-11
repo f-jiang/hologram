@@ -1,6 +1,4 @@
 blobless-tracking testing plan:
-- [ ] make sure rewritten pvision works
-  git checkout a278fadb83d2c894495076c435c9994d05eb8622
 - [ ] make sure 'rudimentary blobless-tracking' works
 - [ ] after all branches merged into master and working together, make a branch for the timeout feature
 
