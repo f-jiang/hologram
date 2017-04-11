@@ -1,10 +1,10 @@
-//#define PRINT_DBG
+#define PRINT_DBG
 
 #include <Stepper.h>
 #include "PVision.h"
 #include "Relay.h"
 
-#define CAM_X_MAX 1024
+#define CAM_X_MAX 768
 #define CAM_X_CENT (CAM_X_MAX / 2.0)
 #define CAM_Y_MAX 768
 #define BLOB_SEEKING_X_THRESHOLD (CAM_X_CENT - 50)
@@ -30,7 +30,7 @@ bool limitMotion = false;
 double angle = 0;
 
 PVision cam;
-int pos;
+int camX;
 bool hasBlob;
 
 Stepper motor(360, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
@@ -141,15 +141,15 @@ void loop(){
   hasBlob = cam[0].visible;
 
   if (hasBlob) {
-    pos = cam[0].y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
+    camX = cam[0].y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
     *camY = (uint16_t) (CAM_Y_MAX - cam[0].x);
 
-    if (abs(pos) > DEADBAND) {
-      mult = (double) abs(pos) / CAM_X_CENT;
+    if (abs(camX) > DEADBAND) {
+      mult = (double) abs(camX) / CAM_X_CENT;
       rpm = varRpm ? mult * MAX_RPM : MAX_RPM;
       step = varStep ? mult * MAX_STEP : MAX_STEP;
 
-      if (pos > 0) {
+      if (camX > 0) {
         step *= -1;
       }
 
@@ -157,14 +157,14 @@ void loop(){
     }
 
 #ifdef PRINT_DBG
-    Serial.print(cam[0].y);
+    Serial.print(camX);
     Serial.print(" ");
-    Serial.print(cam[0].x);
+    Serial.print(*camY);
     Serial.print(" ");
     Serial.print(cam[0].dist);
     Serial.println();
 #endif  
-  } else if (abs(pos) > BLOB_SEEKING_X_THRESHOLD) {  // attempt to find user indefinitely--no timeout yet
+  } else if (abs(camX) > BLOB_SEEKING_X_THRESHOLD) {  // attempt to find user indefinitely--no timeout yet
     rotateBase(MAX_RPM, cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
   }
 }
