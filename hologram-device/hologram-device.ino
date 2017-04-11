@@ -137,8 +137,8 @@ void loop(){
     Serial.println();
 #endif  
   } else {  // attempt to find user indefinitely--no timeout yet
-    motor.setSpeed(cam[0].dty > 0 ? MAX_RPM : -MAX_RPM);  // MAX_RPM negative or positive?
-    motor.step(MAX_STEP);
+    motor.setSpeed(MAX_RPM);
+    motor.step(cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
   }
 
   if (/*!hasBlob ||*/ abs(pos) <= DEADBAND) {
