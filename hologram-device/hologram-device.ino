@@ -7,6 +7,7 @@
 #define CAM_X_MAX 1024
 #define CAM_X_CENT (CAM_X_MAX / 2.0)
 #define CAM_Y_MAX 768
+#define BLOB_SEEKING_X_THRESHOLD (CAM_X_CENT - 50)
 
 #define MAX_RPM 60
 #define MAX_STEP 10
@@ -163,7 +164,7 @@ void loop(){
     Serial.print(cam[0].dist);
     Serial.println();
 #endif  
-  } else {  // attempt to find user indefinitely--no timeout yet
+  } else if (abs(pos) > BLOB_SEEKING_X_THRESHOLD) {  // attempt to find user indefinitely--no timeout yet
     rotateBase(MAX_RPM, cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
   }
 }
