@@ -1,7 +1,7 @@
 //#define PRINT_DBG
 
 #include <Stepper.h>
-#include <PVision.h>
+#include "PVision.h"
 #include "Relay.h"
 
 #define CAM_X_MAX 1024
@@ -89,7 +89,7 @@ void setup() {
   camRelay.Close();
   // end relay box setup
 
-  cam.init();
+  cam.Init();
 
   memset(buf, 0, sizeof(buf));
 
@@ -106,11 +106,12 @@ void setup() {
 } 
 
 void loop(){
-  hasBlob = cam.read() & BLOB1;
+  cam.Read();
+  hasBlob = cam[0].visible;
 
   if (hasBlob) {
-    pos = cam.Blob1.Y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
-    *camY = (uint16_t) (CAM_Y_MAX - cam.Blob1.X);
+    pos = cam[0].y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
+    *camY = (uint16_t) (CAM_Y_MAX - cam[0].x);
 
     if (abs(pos) > DEADBAND) {
       mult = (double) abs(pos) / CAM_X_CENT;
@@ -126,16 +127,19 @@ void loop(){
     }
 
 #ifdef PRINT_DBG
-    Serial.print(cam.Blob1.Y);
+    Serial.print(cam[0].y);
     Serial.print(" ");
-    Serial.print(cam.Blob1.X);
+    Serial.print(cam[0].x);
     Serial.print(" ");
-    Serial.print(cam.Blob1.Size);
+    Serial.print(cam[0].size);
     Serial.println();
 #endif  
+  } else {  // attempt to find user indefinitely--no timeout yet
+    motor.setSpeed(MAX_RPM);
+    motor.step(cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
   }
 
-  if (!hasBlob || abs(pos) <= DEADBAND) {
+  if (/*!hasBlob ||*/ abs(pos) <= DEADBAND) {
     digitalWrite(STEPPER_A, LOW);
     digitalWrite(STEPPER_B, LOW);
     digitalWrite(STEPPER_C, LOW);
