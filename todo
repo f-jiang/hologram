@@ -1,19 +1,14 @@
-####`feature branch merge order`
-- [x] `relay-box`
-- [x] `blobless-tracking`
-- [ ] `motion-limits`
-
 ####`hologram-device`
 
-- [ ] eliminate y-value flickering when camera goes out of height bounds
-- [ ] enable following even when blob isn't visible
+- [ ] timeout after which low power mode begins
+  - [x] first will need to organize relay code (its own class)
+- [ ] only seek blob if it leaves from the side
 - [ ] lock onto the user each time the web interface is opened
   - using socketio send from node to arduino serialread etc
-- [ ] timeout after which low power mode begins
-  - [ ] first will need to organize relay code (its own class)
 - [ ] motor slew rate control
-- [ ] see what is slowing down PVision
 - [ ] PID vision tracking
+- [x] enable following even when blob isn't visible
+- [x] eliminate y-value flickering when camera goes out of height bounds
 - [x] verify combined program works for both encoder and vision tracking (non-PID)
 - [x] `encPos %= 320`, and send readings to `model-viewer` (`uint16_t`, `buf[]`, `memcpy()` twice, `Serial.write()`)
 - [x] remove `memcpy()` calls
@@ -30,4 +25,3 @@
   - [ ] only load new model if its slide has been explicitly clicked on (ignore drags, next/prev btn presses)
   - [ ] automatically close drawer on model select
   - [ ] better, centered drawer icon
-
