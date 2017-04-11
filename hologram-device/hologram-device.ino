@@ -11,7 +11,9 @@
 #define MAX_RPM 60
 #define MAX_STEP 10
 #define DEADBAND 0
+#define MAX_ROTATIONAL_OFFSET_DEG 75
 #define TICKS_PER_REV 320
+#define DEG_PER_TICK ((double) 360 / TICKS_PER_REV)
 
 #define ENC_A  0
 #define ENC_B  1
@@ -22,6 +24,8 @@
 
 bool varRpm = true;
 bool varStep = true;
+
+double angle = 0;
 
 PVision cam;
 int pos;
@@ -55,18 +59,39 @@ void doEncoder() {
    * [Reference/PortManipulation], specifically the PIND register.
    */ 
   if (digitalRead(ENC_A) == digitalRead(ENC_B)) {
+    angle += DEG_PER_TICK;
+    if (angle > 360) {
+      angle -= 360;
+    }
+
     (*encPos)++;
     *encPos %= TICKS_PER_REV;
-  } else if (*encPos == 0) {
-    *encPos = TICKS_PER_REV;
   } else {
-    (*encPos)--;
-    *encPos %= TICKS_PER_REV;
-  }
+    angle -= DEG_PER_TICK;
+    if (angle < 0) {
+      angle += 360;
+    }
 
+    if (*encPos == 0) {
+      *encPos = TICKS_PER_REV;
+    } else {
+      (*encPos)--;
+      *encPos %= TICKS_PER_REV;
+    }
+  }
 #ifdef PRINT_DBG
-  Serial.println (*encPos, DEC);
+  Serial.print (*encPos, DEC);
+  Serial.print(" ");
+  Serial.println(angle);
 #endif
+}
+
+void rotateBase(int rpm, int step) {
+  if (!(angle < -MAX_ROTATIONAL_OFFSET_DEG && step > 0) &&
+      !(angle > MAX_ROTATIONAL_OFFSET_DEG && step < 0)) {
+    motor.setSpeed(rpm);
+    motor.step(step);
+  }
 }
 
 void setup() {
@@ -122,8 +147,7 @@ void loop(){
         step *= -1;
       }
 
-      motor.setSpeed(rpm);
-      motor.step(step);
+      rotateBase(rpm, step);
     }
 
 #ifdef PRINT_DBG
@@ -135,8 +159,7 @@ void loop(){
     Serial.println();
 #endif  
   } else {  // attempt to find user indefinitely--no timeout yet
-    motor.setSpeed(MAX_RPM);
-    motor.step(cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
+    rotateBase(MAX_RPM, cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
   }
 
   if (/*!hasBlob ||*/ abs(pos) <= DEADBAND) {
