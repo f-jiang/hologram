@@ -1,7 +1,3 @@
-blobless-tracking testing plan:
-- [ ] make sure 'rudimentary blobless-tracking' works
-- [ ] after all branches merged into master and working together, make a branch for the timeout feature
-
 ####`hologram-device`
 
 - [ ] eliminate y-value flickering when camera goes out of height bounds
