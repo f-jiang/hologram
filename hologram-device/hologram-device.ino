@@ -59,11 +59,17 @@ void doEncoder() {
    */ 
   if (digitalRead(ENC_A) == digitalRead(ENC_B)) {
     angle += DEG_PER_TICK;
+    if (angle > 360) {
+      angle -= 360;
+    }
 
     (*encPos)++;
     *encPos %= TICKS_PER_REV;
   } else {
     angle -= DEG_PER_TICK;
+    if (angle < 0) {
+      angle += 360;
+    }
 
     if (*encPos == 0) {
       *encPos = TICKS_PER_REV;
