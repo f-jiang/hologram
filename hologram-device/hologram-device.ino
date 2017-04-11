@@ -1,10 +1,10 @@
-//#define PRINT_DBG
+#define PRINT_DBG
 
 #include <Stepper.h>
 #include "PVision.h"
 #include "Relay.h"
 
-#define CAM_X_MAX 1024
+#define CAM_X_MAX 768
 #define CAM_X_CENT (CAM_X_MAX / 2.0)
 #define CAM_Y_MAX 768
 
@@ -156,9 +156,9 @@ void loop(){
     }
 
 #ifdef PRINT_DBG
-    Serial.print(cam[0].y);
+    Serial.print(pos);
     Serial.print(" ");
-    Serial.print(cam[0].x);
+    Serial.print(*camY);
     Serial.print(" ");
     Serial.print(cam[0].dist);
     Serial.println();
