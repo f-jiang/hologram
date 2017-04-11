@@ -24,7 +24,7 @@
 
 bool varRpm = true;
 bool varStep = true;
-bool limitMotion = true;
+bool limitMotion = false;
 
 double angle = 0;
 
@@ -87,6 +87,11 @@ void rotateBase(int rpm, int step) {
       !(angle > MAX_ROTATIONAL_OFFSET_DEG && step < 0))) {
     motor.setSpeed(rpm);
     motor.step(step);
+  } else {
+    digitalWrite(STEPPER_A, LOW);
+    digitalWrite(STEPPER_B, LOW);
+    digitalWrite(STEPPER_C, LOW);
+    digitalWrite(STEPPER_D, LOW);
   }
 }
 
@@ -156,13 +161,6 @@ void loop(){
 #endif  
   } else {  // attempt to find user indefinitely--no timeout yet
     rotateBase(MAX_RPM, cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
-  }
-
-  if (/*!hasBlob ||*/ abs(pos) <= DEADBAND) {
-    digitalWrite(STEPPER_A, LOW);
-    digitalWrite(STEPPER_B, LOW);
-    digitalWrite(STEPPER_C, LOW);
-    digitalWrite(STEPPER_D, LOW);
   }
 }
 
