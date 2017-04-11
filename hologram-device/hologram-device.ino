@@ -46,11 +46,13 @@ uint8_t buf[4];
 uint16_t *encPos = (uint16_t *)buf;
 uint16_t *camY = (uint16_t *)(buf + 2);
 
+#ifndef PRINT_DBG
 // period ~0.033 s
 ISR(TIMER3_OVF_vect) {
   Serial.write(buf, sizeof(buf));
   Serial.flush();
 }
+#endif
 
 void doEncoder() {
   /* If pinA and pinB are both high or both low, it is spinning
@@ -96,6 +98,7 @@ void rotateBase(int rpm, int step) {
 }
 
 void setup() {
+#ifndef PRINT_DBG
   // timer interrupt setup
   noInterrupts();
   TCCR3A = 0;
@@ -108,6 +111,7 @@ void setup() {
 
   interrupts();
   // end the timer interrupt setup
+#endif
 
   // relay box setup - everything on by default
   motorsAndFansRelay.Close();
@@ -156,7 +160,7 @@ void loop(){
     Serial.print(" ");
     Serial.print(cam[0].x);
     Serial.print(" ");
-    Serial.print(cam[0].size);
+    Serial.print(cam[0].dist);
     Serial.println();
 #endif  
   } else {  // attempt to find user indefinitely--no timeout yet
