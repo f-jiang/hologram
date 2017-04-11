@@ -29,7 +29,7 @@ bool limitMotion = false;
 double angle = 0;
 
 PVision cam;
-int pos;
+int camX;
 bool hasBlob;
 
 Stepper motor(360, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
@@ -140,15 +140,15 @@ void loop(){
   hasBlob = cam[0].visible;
 
   if (hasBlob) {
-    pos = cam[0].y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
+    camX = cam[0].y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
     *camY = (uint16_t) (CAM_Y_MAX - cam[0].x);
 
-    if (abs(pos) > DEADBAND) {
-      mult = (double) abs(pos) / CAM_X_CENT;
+    if (abs(camX) > DEADBAND) {
+      mult = (double) abs(camX) / CAM_X_CENT;
       rpm = varRpm ? mult * MAX_RPM : MAX_RPM;
       step = varStep ? mult * MAX_STEP : MAX_STEP;
 
-      if (pos > 0) {
+      if (camX > 0) {
         step *= -1;
       }
 
@@ -156,7 +156,7 @@ void loop(){
     }
 
 #ifdef PRINT_DBG
-    Serial.print(pos);
+    Serial.print(camX);
     Serial.print(" ");
     Serial.print(*camY);
     Serial.print(" ");
