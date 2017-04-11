@@ -24,6 +24,7 @@
 
 bool varRpm = true;
 bool varStep = true;
+bool limitMotion = true;
 
 double angle = 0;
 
@@ -81,8 +82,9 @@ void doEncoder() {
 }
 
 void rotateBase(int rpm, int step) {
-  if (!(angle < -MAX_ROTATIONAL_OFFSET_DEG && step > 0) &&
-      !(angle > MAX_ROTATIONAL_OFFSET_DEG && step < 0)) {
+  if (!limitMotion ||
+      (!(angle < -MAX_ROTATIONAL_OFFSET_DEG && step > 0) &&
+      !(angle > MAX_ROTATIONAL_OFFSET_DEG && step < 0))) {
     motor.setSpeed(rpm);
     motor.step(step);
   }
