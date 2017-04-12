@@ -24,13 +24,13 @@
 #define STEPPER_D 11
 
 // settings
-bool varRpm = true;
-bool varStep = true;
-bool limitMotion = false;
+bool isVarRpm = true;
+bool isVarStep = true;
+bool isMotionLimited = false;
 
 // state
 bool isSeekingBlob;
-bool hasBlob;
+bool isBlobVisible;
 
 double angle = 0;
 
@@ -89,8 +89,8 @@ void doEncoder() {
 }
 
 void rotateBase(int rpm, int step) {
-  if ((hasBlob || isSeekingBlob) &&
-      (!limitMotion ||
+  if ((isBlobVisible || isSeekingBlob) &&
+      (!isMotionLimited ||
       (!(angle < -MAX_ROTATIONAL_OFFSET_DEG && step > 0) &&
       !(angle > MAX_ROTATIONAL_OFFSET_DEG && step < 0)))) {
     motor.setSpeed(rpm);
@@ -141,11 +141,11 @@ void setup() {
   Serial.println("start");                // a personal quirk
 } 
 
-void loop(){
+void loop() {
   cam.Read();
-  hasBlob = cam[0].visible;
+  isBlobVisible = cam[0].visible;
 
-  if (hasBlob) {
+  if (isBlobVisible) {
     isSeekingBlob = false;
 
     camX = cam[0].y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
@@ -153,8 +153,8 @@ void loop(){
 
     if (abs(camX) > DEADBAND) {
       mult = (double) abs(camX) / CAM_X_CENT;
-      rpm = varRpm ? mult * MAX_RPM : MAX_RPM;
-      step = varStep ? mult * MAX_STEP : MAX_STEP;
+      rpm = isVarRpm ? mult * MAX_RPM : MAX_RPM;
+      step = isVarStep ? mult * MAX_STEP : MAX_STEP;
 
       if (camX > 0) {
         step *= -1;
@@ -176,7 +176,4 @@ void loop(){
     rotateBase(MAX_RPM, cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
   }
 }
-
-
-
 
