@@ -7,7 +7,7 @@
 #define CAM_X_MAX 768
 #define CAM_X_CENT (CAM_X_MAX / 2.0)
 #define CAM_Y_MAX 768
-#define BLOB_SEEKING_X_THRESHOLD (CAM_X_CENT - 50)
+#define BLOB_SEEKING_X_THRESHOLD (CAM_X_CENT - 25)
 
 #define MAX_RPM 60
 #define MAX_STEP 10
