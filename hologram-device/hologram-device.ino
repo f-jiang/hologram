@@ -15,6 +15,7 @@
 #define MAX_ROTATIONAL_OFFSET_DEG 75
 #define TICKS_PER_REV 320
 #define DEG_PER_TICK ((double) 360 / TICKS_PER_REV)
+#define TIMEOUT_MS 5000
 
 #define ENC_A  0
 #define ENC_B  1
@@ -33,6 +34,7 @@ bool isSeekingBlob;
 bool isBlobVisible;
 
 double angle = 0;
+unsigned long inactiveStart = 0;
 
 PVision cam;
 int camX;
@@ -103,6 +105,19 @@ void rotateBase(int rpm, int step) {
   }
 }
 
+void resetTimeout() {
+  motorsAndFansRelay.Close();
+  fogMachineRelay.Close();
+  inactiveStart = millis();
+}
+
+void stopIfTimeout() {
+  if (millis() - inactiveStart > TIMEOUT_MS) {
+    motorsAndFansRelay.Open();
+    fogMachineRelay.Open();
+  }
+}
+
 void setup() {
 #ifndef PRINT_DBG
   // timer interrupt setup
@@ -139,14 +154,17 @@ void setup() {
   attachInterrupt(2, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
   Serial.begin (9600);
   Serial.println("start");                // a personal quirk
+  resetTimeout();
 } 
 
 void loop() {
   cam.Read();
   isBlobVisible = cam[0].visible;
+  stopIfTimeout();
 
   if (isBlobVisible) {
     isSeekingBlob = false;
+    resetTimeout();
 
     camX = cam[0].y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
     *camY = (uint16_t) (CAM_Y_MAX - cam[0].x);
@@ -171,7 +189,7 @@ void loop() {
     Serial.print(cam[0].dist);
     Serial.println();
 #endif  
-  } else {  // attempt to find user indefinitely--no timeout yet
+  } else {
     isSeekingBlob = abs(camX) > BLOB_SEEKING_X_THRESHOLD;
     rotateBase(MAX_RPM, cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
   }
