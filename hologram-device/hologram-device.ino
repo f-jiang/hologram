@@ -77,7 +77,7 @@ void doEncoder() {
     angle -= DEG_PER_TICK;
 
     if (*encPos == 0) {
-      *encPos = TICKS_PER_REV;
+      *encPos = TICKS_PER_REV - 1;
     } else {
       (*encPos)--;
       *encPos %= TICKS_PER_REV;
