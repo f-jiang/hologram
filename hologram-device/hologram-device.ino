@@ -23,15 +23,19 @@
 #define STEPPER_C 10
 #define STEPPER_D 11
 
+// settings
 bool varRpm = true;
 bool varStep = true;
 bool limitMotion = false;
+
+// state
+bool isSeekingBlob;
+bool hasBlob;
 
 double angle = 0;
 
 PVision cam;
 int camX;
-bool hasBlob;
 
 Stepper motor(360, STEPPER_A, STEPPER_B, STEPPER_C, STEPPER_D);
 long rpm;
@@ -85,9 +89,10 @@ void doEncoder() {
 }
 
 void rotateBase(int rpm, int step) {
-  if (!limitMotion ||
+  if ((hasBlob || isSeekingBlob) &&
+      (!limitMotion ||
       (!(angle < -MAX_ROTATIONAL_OFFSET_DEG && step > 0) &&
-      !(angle > MAX_ROTATIONAL_OFFSET_DEG && step < 0))) {
+      !(angle > MAX_ROTATIONAL_OFFSET_DEG && step < 0)))) {
     motor.setSpeed(rpm);
     motor.step(step);
   } else {
@@ -141,6 +146,8 @@ void loop(){
   hasBlob = cam[0].visible;
 
   if (hasBlob) {
+    isSeekingBlob = false;
+
     camX = cam[0].y - CAM_X_CENT;  // ports for X and Y are mixed up - need to fix
     *camY = (uint16_t) (CAM_Y_MAX - cam[0].x);
 
@@ -164,7 +171,8 @@ void loop(){
     Serial.print(cam[0].dist);
     Serial.println();
 #endif  
-  } else if (abs(camX) > BLOB_SEEKING_X_THRESHOLD) {  // attempt to find user indefinitely--no timeout yet
+  } else {  // attempt to find user indefinitely--no timeout yet
+    isSeekingBlob = abs(camX) > BLOB_SEEKING_X_THRESHOLD;
     rotateBase(MAX_RPM, cam[0].dty > 0 ? -MAX_STEP : MAX_STEP);
   }
 }
