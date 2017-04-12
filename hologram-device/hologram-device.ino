@@ -1,4 +1,4 @@
-#define PRINT_DBG
+//#define PRINT_DBG
 
 #include <Stepper.h>
 #include "PVision.h"
@@ -26,7 +26,7 @@
 // settings
 bool isVarRpm = true;
 bool isVarStep = true;
-bool isMotionLimited = false;
+bool isMotionLimited = true;
 
 // state
 bool isSeekingBlob;
