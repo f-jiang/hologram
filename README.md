@@ -5,3 +5,34 @@
   - rpi.gpio
   - transitions: `sudo pip3 install transitions`
 - python version 3.5.2
+- description:
+  - frontend gui with model viewer, backend with hologram control and vision tracking
+  - hologram power on -> boot into GUI on touchscreen
+  - menu tree
+    - model selection
+      - my library
+      - add new model
+        - from filesystem (incl. external media) [or network]
+        - [convert from other formats to .obj if needed]
+      - [recent]
+      - [favourites]
+    - settings
+      - adjust inactivity timeout
+      - adjust range of motion and set center
+      - target finding on model loaded
+      - adjust target finding timeout
+    - model viewing (fullscreen, on projector)
+      - display switch from touchscreen to projector
+      - quit using hardware button on hologram device
+  - machine behaviour
+    - gui mode (not viewing model):
+      - only motors are powered
+    - when viewing model:
+      - when model first loaded, track user if the option is set
+        - if timeout exceeded, return to aforementioned "gui mode"
+      - displaying model: follow user, rotate model as needed
+      - finding user when they're out of bounds:
+        - also follow user and rotate model as needed
+      - always
+        - respect range of motion boundaries
+
