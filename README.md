@@ -1,0 +1,7 @@
+- to learn, separately then together:
+  - tkinter: `sudo apt install python3-tk`
+  - multiprocessing: included by default
+  - opencv: [setup guide](http://www.pyimagesearch.com/2016/10/24/ubuntu-16-04-how-to-install-opencv/)
+  - rpi.gpio
+  - transitions: `sudo pip3 install transitions`
+- python version 3.5.2
