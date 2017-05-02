@@ -35,4 +35,12 @@
         - also follow user and rotate model as needed
       - always
         - respect range of motion boundaries
-
+  - relays - current:
+    - motors and fans
+    - fog machine
+    - camera
+  - relays - proposed:
+    - motors
+    - fog machine
+    - fans
+    - touch screen/projector
